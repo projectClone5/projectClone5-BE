@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequiredArgsConstructor
-public class commentController {
+public class CommentController {
 
     private final CommentService commentService;
 
