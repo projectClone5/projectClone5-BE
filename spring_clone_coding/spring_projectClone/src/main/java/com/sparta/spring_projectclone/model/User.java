@@ -42,6 +42,11 @@ public class User {
 //    @OneToMany
 //    private List<Love> loves = new ArrayList<>();
 
-    // testing 
+    public User(String username, String nickname, String password, String userImgUrl) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.userImgUrl = userImgUrl;
+    }
 
 }
