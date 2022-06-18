@@ -1,6 +1,6 @@
 package com.sparta.spring_projectclone.model;
 
-import com.sparta.spring_projectclone.dto.CommentCreateDto;
+import com.sparta.spring_projectclone.dto.CommentRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,8 +29,11 @@ public class Comment {
     private String image;
 
 
+//    @ManyToOne
+//    private Post post;
 
-    public static Comment commentCreateDto(Long postId, CommentCreateDto commentCreateDto) {
+
+    public static Comment commentCreateDto(CommentRequestDto commentCreateDto) {
 
         Comment comment = new Comment();
         comment.setComment(commentCreateDto.getComment());
@@ -39,9 +42,6 @@ public class Comment {
 
         return comment;
     }
-
-//    @ManyToOne
-//    private Post post;
 
 
 
