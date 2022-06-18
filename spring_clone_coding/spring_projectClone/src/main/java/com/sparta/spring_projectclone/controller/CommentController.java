@@ -26,25 +26,12 @@ public class CommentController {
         commentService.commentWrite(postId, commentRequestDto);
         ApiResponseMessage message = new ApiResponseMessage("Success", "댓글이 작성 되었습니다.", "", "");
         return new  ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
-
-        //@PostMapping("/api/post/comment")
-        //public ResponseEntity<ApiResponseMessage> commentWrite(@RequestBody @Valid CommentRequestDto commentRequestDto){
-        //    commentService.commentWrite(commentRequestDto);
-        //    ApiResponseMessage message = new ApiResponseMessage("Success", "댓글이 작성 되었습니다.", "", "");
-        //    return new  ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
-        /*
-                public ResponseEntity<ApiResponseMessage> commentWrite(@PathVariable("id") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-                return commentService.commentWrite(commentCreateDto, userDetails.getUsername());
-                ApiResponseMessage message = new ApiResponseMessage("Success", "게시글이 작성 되었습니다.", "", "");
-                return new  ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
-         * */
     }
     //댓글 수정
     @PutMapping("api/comment/{commentId}")
     public CommentResponseDto commentUpdate(@PathVariable("commentId") Long commentId, @RequestBody @Valid CommentRequestDto commentRequestDto){
         return commentService.commentUpdated(commentId , commentRequestDto);
     }
-
     //댓글 삭제
     @DeleteMapping("api/comment/{commentId")
     public ResponseEntity<ApiResponseMessage> commentDelete(@PathVariable("commentId") Long commentId) {
