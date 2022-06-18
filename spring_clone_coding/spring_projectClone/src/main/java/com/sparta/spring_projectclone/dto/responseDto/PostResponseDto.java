@@ -19,5 +19,5 @@ public class PostResponseDto {
     private Category category;
     private int loveCount;
     private int price;
-    private List<CommentResponseDto> comments;
+    private List<PostCommentResponseDto> comments;
 }

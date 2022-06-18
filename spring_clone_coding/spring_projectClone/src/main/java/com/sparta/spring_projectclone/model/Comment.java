@@ -1,7 +1,7 @@
 package com.sparta.spring_projectclone.model;
 
 
-import com.sparta.spring_projectclone.dto.CommentRequestDto;
+import com.sparta.spring_projectclone.dto.requestDto.CommentRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 

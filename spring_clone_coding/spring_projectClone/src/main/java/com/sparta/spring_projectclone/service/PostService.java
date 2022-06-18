@@ -1,7 +1,7 @@
 package com.sparta.spring_projectclone.service;
 
 import com.sparta.spring_projectclone.dto.requestDto.PostRequestDto;
-import com.sparta.spring_projectclone.dto.responseDto.CommentResponseDto;
+import com.sparta.spring_projectclone.dto.responseDto.PostCommentResponseDto;
 import com.sparta.spring_projectclone.dto.responseDto.PostResponseDto;
 import com.sparta.spring_projectclone.model.Comment;
 import com.sparta.spring_projectclone.model.Post;
@@ -48,16 +48,16 @@ public class PostService {
         );
 
         List<Comment> comments = commentRepository.findAllByPostId(postId);
-        List<CommentResponseDto> commentList = new ArrayList<>();
+        List<PostCommentResponseDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
-            CommentResponseDto commentResponseDto = CommentResponseDto.builder()
+            PostCommentResponseDto postCommentResponseDto = PostCommentResponseDto.builder()
                     .commentId(comment.getId())
                     .userId(comment.getPost().getUser().getId())
                     .userImgUrl(comment.getPost().getUser().getUserImgUrl())
                     .comment(comment.getComment())
                     .reviewPoint(comment.getReviewPoint())
                     .build();
-            commentList.add(commentResponseDto);
+            commentList.add(postCommentResponseDto);
         }
 
         return PostResponseDto.builder()

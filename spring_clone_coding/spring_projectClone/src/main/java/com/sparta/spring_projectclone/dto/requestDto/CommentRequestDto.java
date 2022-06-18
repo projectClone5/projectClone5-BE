@@ -1,4 +1,4 @@
-package com.sparta.spring_projectclone.dto;
+package com.sparta.spring_projectclone.dto.requestDto;
 
 
 import javax.validation.constraints.NotNull;

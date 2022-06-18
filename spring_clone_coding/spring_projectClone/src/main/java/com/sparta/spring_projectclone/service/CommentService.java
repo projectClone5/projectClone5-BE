@@ -1,7 +1,7 @@
 package com.sparta.spring_projectclone.service;
 
-import com.sparta.spring_projectclone.dto.CommentRequestDto;
-import com.sparta.spring_projectclone.dto.CommentResponseDto;
+import com.sparta.spring_projectclone.dto.requestDto.CommentRequestDto;
+import com.sparta.spring_projectclone.dto.responseDto.CommentResponseDto;
 import com.sparta.spring_projectclone.model.Comment;
 import com.sparta.spring_projectclone.repository.CommentRepository;
 import com.sparta.spring_projectclone.repository.PostRepository;

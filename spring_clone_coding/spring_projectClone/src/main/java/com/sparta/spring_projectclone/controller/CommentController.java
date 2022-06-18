@@ -1,6 +1,6 @@
 package com.sparta.spring_projectclone.controller;
 
-import com.sparta.spring_projectclone.dto.CommentRequestDto;
+import com.sparta.spring_projectclone.dto.requestDto.CommentRequestDto;
 import com.sparta.spring_projectclone.exception.ApiResponseMessage;
 import com.sparta.spring_projectclone.service.CommentService;
 import lombok.RequiredArgsConstructor;
