@@ -4,6 +4,7 @@ package com.sparta.spring_projectclone.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +37,11 @@ public class User {
     @Column
     private String userImgUrl;
 
-//    @OneToMany
-//    private List<Post> posts = new ArrayList<>();
-//
-//    @OneToMany
-//    private List<Love> loves = new ArrayList<>();
+    @OneToMany
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany
+    private List<Love> loves = new ArrayList<>();
 
 
 }
