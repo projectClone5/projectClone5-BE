@@ -1,8 +1,7 @@
 package com.sparta.spring_projectclone.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.sparta.spring_projectclone.dto.requestDto.PostRequestDto;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,6 +10,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @SequenceGenerator(name = "POST_A",
         sequenceName = "POST_B",
@@ -28,17 +29,21 @@ public class Post {
     @Column(nullable = false)
     private String imgUrl;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "CLOB")
     private String content;
 
     @Column(nullable = false)
-    private double avgReviewPoint;
+    private int avgReviewPoint;
+
+    @Column(nullable = false)
+    private int totalReviewPoint;
 
     @Column(nullable = false)
     private int totalComment;
 
     @Column(nullable = false)
-    private String category;
+    private Category category;
 
     @Column(nullable = false)
     private int loveCount;
@@ -46,9 +51,22 @@ public class Post {
     @Column(nullable = false)
     private int price;
 
-//    @ManyToOne
-//    private User user;
-//
-//    @OneToMany
-//    private List<Comment> comments = new ArrayList<>();
+    public int getAvgReviewPoint() {
+        avgReviewPoint = totalReviewPoint / totalComment;
+        return Math.round(avgReviewPoint);
+    }
+
+    @ManyToOne
+    private User user;
+
+    @OneToMany
+    private List<Comment> comments = new ArrayList<>();
+
+    public void update(PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.imgUrl = requestDto.getImgUrl();
+        this.content = requestDto.getContent();
+        this.category = requestDto.getCategory();
+        this.price = requestDto.getPrice();
+    }
 }
