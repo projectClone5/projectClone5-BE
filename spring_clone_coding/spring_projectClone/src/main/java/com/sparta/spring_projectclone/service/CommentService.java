@@ -61,7 +61,7 @@ public class CommentService {
         String writer = comment.getUsername();
         // 본인이 작성한 글이 아닙니다
         if(writer.equals(username)){
-            comment.delete(comment);
+            commentRepository.delete(comment);
         } else {
             throw new IllegalArgumentException("작성한 유저가 아닙니다.");
         }
