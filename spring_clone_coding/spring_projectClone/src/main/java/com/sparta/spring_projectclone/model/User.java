@@ -57,7 +57,7 @@ public class User {
         this.password = password;
     }
 
-    public User(UserRequestDto userRequestDto) {
+    public User(Long userId, UserRequestDto userRequestDto, String username) {
         this.nickname = userRequestDto.getNickname();
         this.userImgUrl = userRequestDto.getUserImgUrl();
     }
