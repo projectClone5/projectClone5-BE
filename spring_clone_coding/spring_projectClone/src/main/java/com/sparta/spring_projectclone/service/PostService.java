@@ -86,6 +86,7 @@ public class PostService {
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .imgUrl(imgResult.get("url"))
+                .transImgFileName(imgResult.get("transImgFileName"))
                 .content(requestDto.getContent())
                 .category(requestDto.getCategory())
                 .price(requestDto.getPrice())
@@ -98,6 +99,7 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
+//        Long userId = post.getUser().getId();
 
         if (multipartFile != null) {
             //기존 이미지 삭제후 재등록
@@ -105,16 +107,10 @@ public class PostService {
             Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
 
             //엔티티 업데이트
-
+            post.update(requestDto,imgResult);
         } else {
-            //엔티티 업데이트
-
+            post.update(requestDto);
         }
-
-        Long userId = post.getUser().getId();
-
-
-        post.update(requestDto);
         postRepository.save(post);
     }
 
@@ -122,6 +118,9 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
-        postRepository.deleteById(postId);
+
+        //이미지 파일 삭제
+        awsS3Service.deleteFile(post.getTransImgFileName());
+        postRepository.delete(post);
     }
 }

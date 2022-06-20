@@ -46,7 +46,7 @@ public class PostController {
     //포스트 수정
     @PutMapping("/api/post/{postId}")
     public void updatePost(@PathVariable Long postId,
-                           @RequestPart("imgUrl") MultipartFile multipartFile,
+                           @RequestPart(value = "imgUrl",required = false) MultipartFile multipartFile,
                            @RequestParam("title") String title,
                            @RequestParam("content") String content,
                            @RequestParam("category") Category category,

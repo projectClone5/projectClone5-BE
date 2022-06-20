@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -28,6 +29,9 @@ public class Post {
 
     @Column(nullable = false)
     private String imgUrl;
+
+    @Column(nullable = false)
+    private String transImgFileName;
 
     @Lob
     @Column(nullable = false, columnDefinition = "CLOB")
@@ -68,5 +72,14 @@ public class Post {
         this.content = requestDto.getContent();
         this.category = requestDto.getCategory();
         this.price = requestDto.getPrice();
+    }
+
+    public void update(PostRequestDto requestDto, Map<String, String> imgResult) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.price = requestDto.getPrice();
+        this.category = requestDto.getCategory();
+        this.imgUrl = imgResult.get("url");
+        this.transImgFileName = imgResult.get("transImgFileName");
     }
 }
