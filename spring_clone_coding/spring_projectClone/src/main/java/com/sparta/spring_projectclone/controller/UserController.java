@@ -11,11 +11,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
     private final UserService userService;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 회원 가입 요청 처리
     @PostMapping("api/user/signup")
@@ -31,10 +35,11 @@ public class UserController {
 
     // 로그인 요청 처리
     @PostMapping("api/user/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<String> login(final HttpServletResponse response, @RequestBody LoginRequestDto loginRequestDto) {
         if (userService.login(loginRequestDto)) {
-//            String token = jwtTokenProvider.createToken(loginRequestDto.getUsername());
+            String token = jwtTokenProvider.createToken(loginRequestDto.getUsername());
 //            System.out.println(token);
+            response.addHeader("Authorization", token);
             return new ResponseEntity<>("로그인 성공!!", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("로그인 실패 : username 또는 password 를 확인해주세요.", HttpStatus.BAD_REQUEST);

@@ -7,6 +7,7 @@ import com.sparta.spring_projectclone.dto.responseDto.PostResponseDto;
 import com.sparta.spring_projectclone.model.Comment;
 import com.sparta.spring_projectclone.model.Love;
 import com.sparta.spring_projectclone.model.Post;
+import com.sparta.spring_projectclone.model.User;
 import com.sparta.spring_projectclone.repository.CommentRepository;
 import com.sparta.spring_projectclone.repository.LoveRepository;
 import com.sparta.spring_projectclone.repository.PostRepository;
@@ -105,10 +106,10 @@ public class PostService {
 
     //게시글 작성
     public void savePost(PostRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) {
-        userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
-        
+
         Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
         
         Post post = Post.builder()
@@ -118,6 +119,7 @@ public class PostService {
                 .content(requestDto.getContent())
                 .category(requestDto.getCategory())
                 .price(requestDto.getPrice())
+                .user(user)
                 .build();
         postRepository.save(post);
     }
