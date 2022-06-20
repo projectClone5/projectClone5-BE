@@ -40,29 +40,28 @@ public class PostController {
                          @RequestParam("category") Category category,
                          @RequestParam("price") int price,
                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        PostRequestDto postRequestDto = new PostRequestDto(title,content,category,price);
-//멀티 파트폼 헤더에 타입이 폼데이터라고 multipart/formdater 해야함
-
-        postService.savePost(postRequestDto,multipartFile,userDetails);
+        PostRequestDto postRequestDto = new PostRequestDto(title, content, category, price);
+        //멀티 파트폼 헤더에 타입이 폼데이터라고 multipart/formdater 해야함
+        postService.savePost(postRequestDto, multipartFile, userDetails);
     }
 
     //포스트 수정
     @PutMapping("/api/post/{postId}")
     public void updatePost(@PathVariable Long postId,
-                           @RequestPart(value = "imgUrl",required = false) MultipartFile multipartFile,
+                           @RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile,
                            @RequestParam("title") String title,
                            @RequestParam("content") String content,
                            @RequestParam("category") Category category,
                            @RequestParam("price") int price,
-                           @AuthenticationPrincipal UserDetailsImpl userDetails)  {
-        PostRequestDto postRequestDto = new PostRequestDto(title,content,category,price);
-        postService.updatePost(postId,postRequestDto,multipartFile,userDetails);
+                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        PostRequestDto postRequestDto = new PostRequestDto(title, content, category, price);
+        postService.updatePost(postId, postRequestDto, multipartFile, userDetails);
     }
 
     //포스트 삭제
     @DeleteMapping("/api/post/{postId}")
     public void deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        postService.deletePost(postId,userDetails);
+        postService.deletePost(postId, userDetails);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

@@ -29,14 +29,18 @@ public class Comment {
     @Column(nullable = false)
     private int reviewPoint;
 
+    private String username;
+
     @JsonBackReference // 순환 참조 방지
     @ManyToOne
     @JoinColumn(name = "POST_ID")
     private Post post;
 
-    public Comment(CommentRequestDto commentRequestDto, Post post) {
+
+    public Comment(CommentRequestDto commentRequestDto, Post post, String username) {
         this.comment = commentRequestDto.getComment();
-        this.reviewPoint = commentRequestDto.getReviewPoint();;
+        this.reviewPoint = commentRequestDto.getReviewPoint();
+        this.username = username;
         this.post = post;
     }
 
@@ -44,7 +48,6 @@ public class Comment {
         this.comment = commentRequestDto.getComment();
         this.reviewPoint = commentRequestDto.getReviewPoint();
     }
-
 //    public static Comment commentCreateDto(CommentRequestDto commentCreateDto) {
 //
 //        Comment comment = new Comment();

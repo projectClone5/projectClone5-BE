@@ -2,12 +2,15 @@ package com.sparta.spring_projectclone.service;
 
 import com.sparta.spring_projectclone.dto.requestDto.LoginRequestDto;
 import com.sparta.spring_projectclone.dto.requestDto.SignupRequestDto;
+import com.sparta.spring_projectclone.dto.requestDto.UserRequestDto;
 import com.sparta.spring_projectclone.model.User;
 import com.sparta.spring_projectclone.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -17,9 +20,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
+    private final AwsS3Service awsS3Service;
+
 
     // 로그인
-    public Boolean login(LoginRequestDto loginRequestDto){
+    public Boolean login(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByUsername(loginRequestDto.getUsername())
                 .orElse(null);
         if (user != null) {
@@ -71,4 +76,36 @@ public class UserService {
         return error;
     }
 
+
+    //회원 정보 수정
+    public void update(Long userId, UserRequestDto userRequestDto, String username, MultipartFile multipartFile) {
+        String nickname = userRequestDto.getNickname();
+        Optional<User> found = userRepository.findByNickname(nickname);
+        if (found.isPresent()) {
+            throw new IllegalArgumentException("중복된 닉네임 입니다.");
+        }
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        if (!user.getUsername().equals(username)) {
+            throw new IllegalArgumentException("현재 로그인한 사용자가 아닙니다.");
+        }
+
+        if (multipartFile != null) {
+            String userImgUrl = user.getUserImgUrl();
+            if (userImgUrl != null) {
+                //기존 이미지 삭제후 재등록
+                awsS3Service.deleteFile(userImgUrl);
+                Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
+                //엔티티 업데이트
+                user.update(userRequestDto, imgResult);
+            }else {
+                Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
+                user.update(userRequestDto, imgResult);
+            }
+        } else {
+            user.update(userRequestDto);
+        }
+        userRepository.save(user);
+    }
 }

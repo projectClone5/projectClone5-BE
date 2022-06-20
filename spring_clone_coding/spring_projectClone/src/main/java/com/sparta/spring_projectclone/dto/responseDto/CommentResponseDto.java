@@ -3,7 +3,9 @@ package com.sparta.spring_projectclone.dto.responseDto;
 
 import com.sparta.spring_projectclone.model.Comment;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class CommentResponseDto {
     private Long id;
     private String comment;
