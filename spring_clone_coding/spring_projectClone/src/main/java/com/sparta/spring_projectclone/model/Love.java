@@ -20,11 +20,15 @@ public class Love {
     @Column(name = "LOVE_ID")
     private Long id;
 
-    @Column
-    private Long postId;
-
     @ManyToOne
-    private User user;
+    private Post post;
+
+    @Column
+    private Long userId;
 
 
+    public Love(Long userId, Post post) {
+        this.userId = userId;
+        this.post = post;
+    }
 }

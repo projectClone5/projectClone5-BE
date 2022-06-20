@@ -36,6 +36,7 @@ public class Comment {
     @JoinColumn(name = "POST_ID")
     private Post post;
 
+
     public Comment(CommentRequestDto commentRequestDto, Post post, String username) {
         this.comment = commentRequestDto.getComment();
         this.reviewPoint = commentRequestDto.getReviewPoint();
@@ -47,14 +48,6 @@ public class Comment {
         this.comment = commentRequestDto.getComment();
         this.reviewPoint = commentRequestDto.getReviewPoint();
     }
-
-    public void delete(Comment comment) {
-
-    }
-
-
-
-
 //    public static Comment commentCreateDto(CommentRequestDto commentCreateDto) {
 //
 //        Comment comment = new Comment();
