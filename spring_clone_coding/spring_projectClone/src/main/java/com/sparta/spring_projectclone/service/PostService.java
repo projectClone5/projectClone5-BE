@@ -9,9 +9,11 @@ import com.sparta.spring_projectclone.repository.CommentRepository;
 import com.sparta.spring_projectclone.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+
+    private final AwsS3Service awsS3Service;
 
     //전체 포스트
     public List<PostResponseDto> getPost() {
@@ -75,10 +79,13 @@ public class PostService {
     }
 
     //게시글 작성
-    public void savePost(PostRequestDto requestDto) {
+    public void savePost(PostRequestDto requestDto, MultipartFile multipartFile) {
+        Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
+
+
         Post post = Post.builder()
                 .title(requestDto.getTitle())
-                .imgUrl(requestDto.getImgUrl())
+                .imgUrl(imgResult.get("url"))
                 .content(requestDto.getContent())
                 .category(requestDto.getCategory())
                 .price(requestDto.getPrice())
@@ -87,11 +94,26 @@ public class PostService {
     }
 
     //게시글 수정
-    public void updatePost(Long postId, PostRequestDto requestDto) {
+    public void updatePost(Long postId, PostRequestDto requestDto, MultipartFile multipartFile) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
+
+        if (multipartFile != null) {
+            //기존 이미지 삭제후 재등록
+            awsS3Service.deleteFile(post.getTransImgFileName());
+            Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
+
+            //엔티티 업데이트
+
+        } else {
+            //엔티티 업데이트
+
+        }
+
         Long userId = post.getUser().getId();
+
+
         post.update(requestDto);
         postRepository.save(post);
     }

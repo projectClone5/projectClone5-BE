@@ -51,20 +51,20 @@ public class Post {
     @Column(nullable = false)
     private int price;
 
-    public int getAvgReviewPoint() {
-        avgReviewPoint = totalReviewPoint / totalComment;
-        return Math.round(avgReviewPoint);
-    }
-
     @ManyToOne
     private User user;
 
-    @OneToMany
+    @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
+
+    public void modifyAvgReviewPoint(int totalReviewPoint,int totalComment) {
+        this.totalReviewPoint += totalReviewPoint;
+        this.totalComment += totalComment;
+        this.avgReviewPoint = (int)Math.round((double)this.totalReviewPoint / this.totalComment);
+    }
 
     public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.imgUrl = requestDto.getImgUrl();
         this.content = requestDto.getContent();
         this.category = requestDto.getCategory();
         this.price = requestDto.getPrice();
