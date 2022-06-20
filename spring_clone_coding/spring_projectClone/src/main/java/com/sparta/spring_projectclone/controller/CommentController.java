@@ -27,7 +27,7 @@ public class CommentController {
     public ResponseEntity<ApiResponseMessage> commentWrite(@PathVariable("postId") Long postId,
                                                            @RequestBody @Valid CommentRequestDto commentRequestDto,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
-        commentService.commentWrite(postId, commentRequestDto, userDetails.getUsername());
+        commentService.commentWrite(postId, commentRequestDto, userDetails.getUser().getNickname());
         ApiResponseMessage message = new ApiResponseMessage("Success", "댓글이 작성 되었습니다.", "", "");
         return new  ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
     }
@@ -36,7 +36,7 @@ public class CommentController {
     public CommentResponseDto commentUpdate(@PathVariable("commentId") Long commentId,
                                             @RequestBody @Valid CommentRequestDto commentRequestDto,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commentService.commentUpdated(commentId , commentRequestDto, userDetails.getUsername() );
+        return commentService.commentUpdated(commentId , commentRequestDto,userDetails.getUser().getNickname() );
     }
     //댓글 삭제
     @DeleteMapping("/api/comment/{commentId}")

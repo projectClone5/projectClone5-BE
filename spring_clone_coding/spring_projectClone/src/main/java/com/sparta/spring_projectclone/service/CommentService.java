@@ -37,7 +37,7 @@ public class CommentService {
     public CommentResponseDto commentUpdated(Long commentId, CommentRequestDto commentRequestDto, String username){
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
-        String writer = comment.getUsername();
+        String writer = comment.getNickname();
         System.out.println("옴?");
         // 본인이 작성한 글이 아닙니다
         if(writer.equals(username)){
@@ -55,7 +55,7 @@ public class CommentService {
     public void commentDelete(Long commentId, String username) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
-        String writer = comment.getUsername();
+        String writer = comment.getNickname();
         // 본인이 작성한 글이 아닙니다
         if (writer.equals(username)) {
             // Post에 리뷰포인트 삭제
