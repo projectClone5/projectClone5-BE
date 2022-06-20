@@ -4,22 +4,25 @@ import com.sparta.spring_projectclone.dto.requestDto.LoginRequestDto;
 import com.sparta.spring_projectclone.dto.requestDto.SignupRequestDto;
 
 import com.sparta.spring_projectclone.dto.requestDto.UserRequestDto;
-import com.sparta.spring_projectclone.dto.responseDto.UserResponseDto;
 import com.sparta.spring_projectclone.exception.ApiResponseMessage;
+import com.sparta.spring_projectclone.model.User;
 import com.sparta.spring_projectclone.repository.UserRepository;
 import com.sparta.spring_projectclone.security.UserDetailsImpl;
 import com.sparta.spring_projectclone.jwt.JwtTokenProvider;
+import com.sparta.spring_projectclone.service.S3Uploader;
 import com.sparta.spring_projectclone.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -28,11 +31,12 @@ public class UserController {
     private final UserService userService;
 
     private final UserRepository userRepository;
-
     private final JwtTokenProvider jwtTokenProvider;
+    private final S3Uploader s3Uploader;
+
 
     // 회원 가입 요청 처리
-    @PostMapping("api/user/signup")
+    @PostMapping("/api/user/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignupRequestDto requestDto) {
         try {
             userService.registerUser(requestDto);
@@ -45,8 +49,7 @@ public class UserController {
     }
 
     // 로그인 요청 처리
-
-    @PostMapping("api/user/login")
+    @PostMapping("/api/user/login")
     public ResponseEntity<String> login(final HttpServletResponse response, @RequestBody LoginRequestDto loginRequestDto) {
         if (userService.login(loginRequestDto)) {
             String token = jwtTokenProvider.createToken(loginRequestDto.getUsername());
@@ -58,10 +61,20 @@ public class UserController {
         }
     }
 
+
     // 회원 조회
     @GetMapping("/api/user/{userId}")
-    public UserResponseDto userDetail(@PathVariable("userId") Long userId) {
-        return userRepository.findAllById(userId);
+    public List<User> userDetail(@PathVariable("userId") Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String username = userDetails.getUsername();
+        System.out.println("username = " + username);
+        if (userId.equals(userDetails.getUser().getId())){
+//        return userDetails.getUsername(username);
+            System.out.println("그럼 여기는?");
+            return userRepository.findAllById(userId);
+    } else {
+            System.out.println("들어옴?");
+            throw new IllegalArgumentException("로그인해주세요");
+    }
 //        userDetails.getUsername();
 //        return new UserResponseDto( userDetails.getUsername(userId));
     }

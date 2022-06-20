@@ -25,7 +25,6 @@ public class AwsS3Service {
 
     @Value("projectmini8")
     private String bucket;
-
     private final AmazonS3 amazonS3;
 
     @Transactional

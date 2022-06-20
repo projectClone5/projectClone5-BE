@@ -57,8 +57,8 @@ public class CommentService {
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
         String writer = comment.getUsername();
         // 본인이 작성한 글이 아닙니다
-        if(writer.equals(username)){
-            //Post에 리뷰포인트 삭제
+        if (writer.equals(username)) {
+            // Post에 리뷰포인트 삭제
             comment.getPost().modifyAvgReviewPoint(-comment.getReviewPoint(), -1);
             commentRepository.delete(comment);
         } else {
