@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -30,9 +31,7 @@ public class UserController {
     private final UserService userService;
 
     private final UserRepository userRepository;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final S3Uploader s3Uploader;
 
 
@@ -43,15 +42,13 @@ public class UserController {
             userService.registerUser(requestDto);
             System.out.println("1성공");
             return new ResponseEntity<>("회원가입 완료!!", HttpStatus.OK);
-        }
-        catch(IllegalStateException e) {
+        } catch (IllegalStateException e) {
             System.out.println("1실패");
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     // 로그인 요청 처리
-
     @PostMapping("/api/user/login")
     public ResponseEntity<String> login(final HttpServletResponse response, @RequestBody LoginRequestDto loginRequestDto) {
         if (userService.login(loginRequestDto)) {
@@ -74,7 +71,7 @@ public class UserController {
 //        return userDetails.getUsername(username);
             System.out.println("그럼 여기는?");
             return userRepository.findAllById(userId);
-    }else{
+    } else {
             System.out.println("들어옴?");
             throw new IllegalArgumentException("로그인해주세요");
     }
@@ -84,18 +81,14 @@ public class UserController {
 
     // 회원 정보 수정
     @PutMapping("/api/user/{userId}")
-    public ResponseEntity<ApiResponseMessage> userUpdate( @PathVariable("userId") Long userId,
-                                                          @RequestParam MultipartFile multipartFile,
-                                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
-        userService.update(userId, (UserRequestDto) multipartFile, userDetails.getUsername());
-
-        try {
-            s3Uploader.uploadFiles(multipartFile, "static");
-            ApiResponseMessage message = new ApiResponseMessage("Success", "개인정보가 수정 되었습니다.", "", "");
-            return new  ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ApiResponseMessage> userUpdate(@PathVariable("userId") Long userId,
+                                                         @RequestPart(value = "userImgUrl",required = false) MultipartFile multipartFile,
+                                                         @RequestParam("nickname") String nickname,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UserRequestDto userRequestDto = new UserRequestDto(nickname);
+        userService.update(userId, userRequestDto, userDetails.getUsername(), multipartFile);
+        ApiResponseMessage message = new ApiResponseMessage("Success", "개인정보가 수정 되었습니다.", "", "");
+        return new ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
     }
 
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -29,8 +30,10 @@ public class Post {
     @Column(nullable = false)
     private String imgUrl;
 
-    @Lob
-    @Column(nullable = false, columnDefinition = "CLOB")
+    @Column(nullable = false)
+    private String transImgFileName;
+
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
@@ -51,22 +54,37 @@ public class Post {
     @Column(nullable = false)
     private int price;
 
-    public int getAvgReviewPoint() {
-        avgReviewPoint = totalReviewPoint / totalComment;
-        return Math.round(avgReviewPoint);
-    }
-
     @ManyToOne
     private User user;
 
-    @OneToMany
+    @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Love> loves = new ArrayList<>();
+
+    public void modifyAvgReviewPoint(int totalReviewPoint,int totalComment) {
+        this.totalReviewPoint += totalReviewPoint;
+        this.totalComment += totalComment;
+        this.avgReviewPoint = (int)Math.round((double)this.totalReviewPoint / this.totalComment);
+    }
 
     public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.imgUrl = requestDto.getImgUrl();
         this.content = requestDto.getContent();
         this.category = requestDto.getCategory();
         this.price = requestDto.getPrice();
+    }
+
+    public void update(PostRequestDto requestDto, Map<String, String> imgResult) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.price = requestDto.getPrice();
+        this.category = requestDto.getCategory();
+        this.imgUrl = imgResult.get("url");
+        this.transImgFileName = imgResult.get("transImgFileName");
+    }
+    public void modifyLoveCount(int loveCount){
+        this.loveCount += loveCount;
     }
 }

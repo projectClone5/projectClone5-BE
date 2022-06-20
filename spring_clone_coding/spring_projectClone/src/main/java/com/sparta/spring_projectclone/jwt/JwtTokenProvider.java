@@ -22,11 +22,11 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     // secretKey 와 같은 민감정보는 숨기는 것이 좋다
-    @Value("K7kjHSF345h345S86F3A2erGB98iWIad")
+    @Value("${jwtToken}")
     private String secretKey;
 
     // 토큰 유효시간 5분 설정 (1000L = 1초, 1000L * 60 = 1분)
-    private static final long TOKEN_VALID_TIME = 1000L * 60 * 5;
+    private static final long TOKEN_VALID_TIME = 1000L * 60 * 60 * 3;
 
     private final UserDetailsService userDetailsService;
 

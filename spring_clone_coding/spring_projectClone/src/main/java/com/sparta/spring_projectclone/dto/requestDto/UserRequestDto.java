@@ -12,4 +12,8 @@ import lombok.Setter;
 public class UserRequestDto {
     private String nickname;
     private String userImgUrl;
+
+    public UserRequestDto(String nickname) {
+        this.nickname = nickname;
+    }
 }
