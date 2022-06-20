@@ -2,11 +2,13 @@ package com.sparta.spring_projectclone.controller;
 
 import com.sparta.spring_projectclone.dto.requestDto.LoginRequestDto;
 import com.sparta.spring_projectclone.dto.requestDto.SignupRequestDto;
+
 import com.sparta.spring_projectclone.dto.requestDto.UserRequestDto;
 import com.sparta.spring_projectclone.dto.responseDto.UserResponseDto;
 import com.sparta.spring_projectclone.exception.ApiResponseMessage;
 import com.sparta.spring_projectclone.repository.UserRepository;
 import com.sparta.spring_projectclone.security.UserDetailsImpl;
+import com.sparta.spring_projectclone.jwt.JwtTokenProvider;
 import com.sparta.spring_projectclone.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,14 +37,18 @@ public class UserController {
         }
     }
 
+    // 로그인 요청 처리
     @PostMapping("/api/user/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
         if (userService.login(loginRequestDto)) {
+//            String token = jwtTokenProvider.createToken(loginRequestDto.getUsername());
+//            System.out.println(token);
             return new ResponseEntity<>("로그인 성공!!", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("username 또는 password 를 확인해주세요.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("로그인 실패 : username 또는 password 를 확인해주세요.", HttpStatus.BAD_REQUEST);
         }
     }
+
 
     // 회원 조회
     @GetMapping("/api/user/{userId}")

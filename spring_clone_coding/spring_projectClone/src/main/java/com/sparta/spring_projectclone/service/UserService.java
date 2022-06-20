@@ -43,8 +43,8 @@ public class UserService {
         String nickname = requestDto.getNickname();
         String password = requestDto.getPassword();
         String passwordCheck = requestDto.getPasswordCheck();
-        String pattern = "^[a-zA-Z0-9]*$";
-        String pattern2 = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$";
+        String pattern = "^[a-zA-Z0-9]*$";  // 알파벳 대소문자 패턴
+        String pattern2 = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$";   // 이메일 형식 패턴
 
         // 회원 ID 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
@@ -54,15 +54,15 @@ public class UserService {
 
         // 회원가입 조건
         if (username.length() < 3) {
-            return "username을 3자 이상 입력하세요";
+            throw new IllegalArgumentException("username은 3자 이상 입력하세요.");
         } else if (!Pattern.matches(pattern, username)) {
-            return "알파벳 대소문자와 숫자로만 입력하세요";
+            throw new IllegalArgumentException("알파벳 대소문자와 숫자로만 입력하세요.");
         } else if (!password.equals(passwordCheck)) {
-            return "비밀번호가 일치하지 않습니다";
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         } else if (password.length() < 4) {
-            return "비밀번호를 4자 이상 입력하세요";
+            throw new IllegalArgumentException("비밀번호를 4자 이상 입력하세요.");
         } else if (password.contains(username)) {
-            return "비밀번호에 username을 포함할 수 없습니다.";
+            throw new IllegalArgumentException("비밀번호에 username을 포함할 수 없습니다.");
         }
 
         // 패스워드 인코딩
