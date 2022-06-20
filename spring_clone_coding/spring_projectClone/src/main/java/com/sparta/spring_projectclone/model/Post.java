@@ -33,8 +33,7 @@ public class Post {
     @Column(nullable = false)
     private String transImgFileName;
 
-    @Lob
-    @Column(nullable = false, columnDefinition = "CLOB")
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
@@ -60,6 +59,9 @@ public class Post {
 
     @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Love> loves = new ArrayList<>();
 
     public void modifyAvgReviewPoint(int totalReviewPoint,int totalComment) {
         this.totalReviewPoint += totalReviewPoint;

@@ -3,10 +3,12 @@ package com.sparta.spring_projectclone.controller;
 import com.sparta.spring_projectclone.dto.requestDto.PostRequestDto;
 import com.sparta.spring_projectclone.dto.responseDto.PostResponseDto;
 import com.sparta.spring_projectclone.model.Category;
+import com.sparta.spring_projectclone.security.UserDetailsImpl;
 import com.sparta.spring_projectclone.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,11 +38,12 @@ public class PostController {
                          @RequestParam("title") String title,
                          @RequestParam("content") String content,
                          @RequestParam("category") Category category,
-                         @RequestParam("price") int price) {
+                         @RequestParam("price") int price,
+                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         PostRequestDto postRequestDto = new PostRequestDto(title,content,category,price);
 //멀티 파트폼 헤더에 타입이 폼데이터라고 multipart/formdater 해야함
 
-        postService.savePost(postRequestDto,multipartFile);
+        postService.savePost(postRequestDto,multipartFile,userDetails);
     }
 
     //포스트 수정
@@ -50,20 +53,16 @@ public class PostController {
                            @RequestParam("title") String title,
                            @RequestParam("content") String content,
                            @RequestParam("category") Category category,
-                           @RequestParam("price") int price)  {
+                           @RequestParam("price") int price,
+                           @AuthenticationPrincipal UserDetailsImpl userDetails)  {
         PostRequestDto postRequestDto = new PostRequestDto(title,content,category,price);
-        postService.updatePost(postId,postRequestDto,multipartFile);
+        postService.updatePost(postId,postRequestDto,multipartFile,userDetails);
     }
 
     //포스트 삭제
     @DeleteMapping("/api/post/{postId}")
-    public void deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
-    }
-
-    //상세페이지의 좋아요(찜)
-    @PostMapping("/api/love/{postId}")
-    public void lovePost() {
+    public void deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.deletePost(postId,userDetails);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

@@ -7,6 +7,8 @@ import com.sparta.spring_projectclone.model.Comment;
 import com.sparta.spring_projectclone.model.Post;
 import com.sparta.spring_projectclone.repository.CommentRepository;
 import com.sparta.spring_projectclone.repository.PostRepository;
+import com.sparta.spring_projectclone.repository.UserRepository;
+import com.sparta.spring_projectclone.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
 
     private final AwsS3Service awsS3Service;
 
@@ -79,10 +82,13 @@ public class PostService {
     }
 
     //게시글 작성
-    public void savePost(PostRequestDto requestDto, MultipartFile multipartFile) {
+    public void savePost(PostRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) {
+        userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        );
+        
         Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
-
-
+        
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .imgUrl(imgResult.get("url"))
@@ -95,17 +101,17 @@ public class PostService {
     }
 
     //게시글 수정
-    public void updatePost(Long postId, PostRequestDto requestDto, MultipartFile multipartFile) {
+    public void updatePost(Long postId, PostRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
-//        Long userId = post.getUser().getId();
+        //게시글 작성자가 현재 로그인한 사람인지 확인
+        validateUser(userDetails, post);
 
         if (multipartFile != null) {
             //기존 이미지 삭제후 재등록
             awsS3Service.deleteFile(post.getTransImgFileName());
             Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
-
             //엔티티 업데이트
             post.update(requestDto,imgResult);
         } else {
@@ -114,13 +120,21 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
+        //게시글 작성자가 현재 로그인한 사람인지 확인
+        validateUser(userDetails,post);
 
         //이미지 파일 삭제
         awsS3Service.deleteFile(post.getTransImgFileName());
         postRepository.delete(post);
+    }
+
+    private void validateUser(UserDetailsImpl userDetails, Post post) {
+        if (!post.getUser().getUsername().equals(userDetails.getUsername())) {
+            throw new IllegalArgumentException("게시글 작성자만 수정할 수 있습니다.");
+        }
     }
 }
