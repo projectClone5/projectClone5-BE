@@ -4,7 +4,6 @@ import com.sparta.spring_projectclone.security.UserDetailsImpl;
 import com.sparta.spring_projectclone.service.LoveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,9 +18,5 @@ public class LoveController {
     @PostMapping("/api/love/{postId}")
     public void loves(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         loveService.loves(postId, userDetails);
-    }
-    @DeleteMapping("/api/love/{postId}")
-    public void unloved(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        loveService.unloved(postId, userDetails);
     }
 }

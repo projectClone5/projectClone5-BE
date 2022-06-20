@@ -1,6 +1,7 @@
 package com.sparta.spring_projectclone.dto.responseDto;
 
 import com.sparta.spring_projectclone.model.Category;
+import com.sparta.spring_projectclone.model.Love;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -20,4 +21,5 @@ public class PostResponseDto {
     private int loveCount;
     private int price;
     private List<PostCommentResponseDto> comments;
+    private List<LoveResponseDto> loves;
 }

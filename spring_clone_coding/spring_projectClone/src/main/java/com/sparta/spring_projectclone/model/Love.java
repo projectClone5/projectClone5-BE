@@ -23,12 +23,12 @@ public class Love {
     @ManyToOne
     private Post post;
 
-    @ManyToOne
-    private User user;
+    @Column
+    private Long userId;
 
 
-    public Love(User user, Post post) {
-        this.user = user;
+    public Love(Long userId, Post post) {
+        this.userId = userId;
         this.post = post;
     }
 }

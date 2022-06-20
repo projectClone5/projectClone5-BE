@@ -1,11 +1,14 @@
 package com.sparta.spring_projectclone.service;
 
 import com.sparta.spring_projectclone.dto.requestDto.PostRequestDto;
+import com.sparta.spring_projectclone.dto.responseDto.LoveResponseDto;
 import com.sparta.spring_projectclone.dto.responseDto.PostCommentResponseDto;
 import com.sparta.spring_projectclone.dto.responseDto.PostResponseDto;
 import com.sparta.spring_projectclone.model.Comment;
+import com.sparta.spring_projectclone.model.Love;
 import com.sparta.spring_projectclone.model.Post;
 import com.sparta.spring_projectclone.repository.CommentRepository;
+import com.sparta.spring_projectclone.repository.LoveRepository;
 import com.sparta.spring_projectclone.repository.PostRepository;
 import com.sparta.spring_projectclone.repository.UserRepository;
 import com.sparta.spring_projectclone.security.UserDetailsImpl;
@@ -16,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,8 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
+    private final LoveRepository loveRepository;
+
     private final AwsS3Service awsS3Service;
 
     //전체 포스트
@@ -32,6 +38,13 @@ public class PostService {
         List<Post> posts = postRepository.findAll();
         List<PostResponseDto> postList = new ArrayList<>();
         for (Post post : posts) {
+            List<Love> postLoves = loveRepository.findAllByPostId(post.getId());
+            List<LoveResponseDto> loveUserIdList = new ArrayList<>();
+            for (Love love : postLoves) {
+                Long userId = love.getUserId();
+                LoveResponseDto loveResponseDto = new LoveResponseDto(userId);
+                loveUserIdList.add(loveResponseDto);
+            }
             PostResponseDto postResponseDto = PostResponseDto.builder()
                     .postId(post.getId())
                     .title(post.getTitle())
@@ -42,6 +55,7 @@ public class PostService {
                     .category(post.getCategory())
                     .loveCount(post.getLoveCount())
                     .price(post.getPrice())
+                    .loves(loveUserIdList)
                     .build();
             postList.add(postResponseDto);
         }
@@ -66,6 +80,13 @@ public class PostService {
                     .build();
             commentList.add(postCommentResponseDto);
         }
+        List<Love> loves = post.getLoves();
+        List<LoveResponseDto> loveUserIdList = new ArrayList<>();
+        for (Love love : loves) {
+            Long userId = love.getUserId();
+            LoveResponseDto loveResponseDto = new LoveResponseDto(userId);
+            loveUserIdList.add(loveResponseDto);
+        }
 
         return PostResponseDto.builder()
                 .postId(post.getId())
@@ -78,6 +99,7 @@ public class PostService {
                 .loveCount(post.getLoveCount())
                 .price(post.getPrice())
                 .comments(commentList)
+                .loves(loveUserIdList)
                 .build();
     }
 

@@ -84,4 +84,7 @@ public class Post {
         this.imgUrl = imgResult.get("url");
         this.transImgFileName = imgResult.get("transImgFileName");
     }
+    public void modifyLoveCount(int loveCount){
+        this.loveCount += loveCount;
+    }
 }
