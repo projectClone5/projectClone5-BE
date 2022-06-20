@@ -65,13 +65,13 @@ public class PostController {
         postService.deletePost(postId,userDetails);
     }
 
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    public ResponseEntity<String> handleException(IllegalArgumentException e) {
-//        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(e.getMessage());
-//    }
-//
-//    @ExceptionHandler(NullPointerException.class)
-//    public ResponseEntity<String> handleException(NullPointerException e) {
-//        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("로그인 해주세요");
-//    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> handleNullPointerException(NullPointerException e) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("로그인 해주세요");
+    }
 }
