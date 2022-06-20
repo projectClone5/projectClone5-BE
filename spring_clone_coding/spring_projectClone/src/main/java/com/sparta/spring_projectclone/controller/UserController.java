@@ -1,0 +1,39 @@
+package com.sparta.spring_projectclone.controller;
+
+import com.sparta.spring_projectclone.dto.requestDto.LoginRequestDto;
+import com.sparta.spring_projectclone.dto.requestDto.SignupRequestDto;
+import com.sparta.spring_projectclone.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+
+@RequiredArgsConstructor
+@RestController
+public class UserController {
+    private final UserService userService;
+
+    // 회원 가입 요청 처리
+    @PostMapping("api/user/signup")
+    public ResponseEntity<String> registerUser(@RequestBody SignupRequestDto requestDto) {
+        try {
+            userService.registerUser(requestDto);
+            return new ResponseEntity<>("회원가입 완료!!", HttpStatus.OK);
+        }
+        catch(IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("api/user/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
+        if (userService.login(loginRequestDto)) {
+            return new ResponseEntity<>("로그인 성공!!", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("username 또는 password 를 확인해주세요.", HttpStatus.BAD_REQUEST);
+        }
+    }
+}
