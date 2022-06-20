@@ -1,6 +1,7 @@
 package com.sparta.spring_projectclone.model;
 
 
+import com.sparta.spring_projectclone.dto.requestDto.UserRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,7 +44,7 @@ public class User {
     @OneToMany
     private List<Love> loves = new ArrayList<>();
 
-    public User(String username, String nickname, String password, String userImgUrl) {
+    public User(String username, String nickname) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
@@ -56,4 +57,13 @@ public class User {
         this.password = password;
     }
 
+    public User(Long userId, UserRequestDto userRequestDto, String username) {
+        this.nickname = userRequestDto.getNickname();
+        this.userImgUrl = userRequestDto.getUserImgUrl();
+    }
+
+    public void update(UserRequestDto userRequestDto) {
+        this.nickname = userRequestDto.getNickname();
+        this.userImgUrl = userRequestDto.getUserImgUrl();
+    }
 }

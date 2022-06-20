@@ -24,7 +24,7 @@ public class ApiResponseMessage {
 
 
 
-    
+
     public ApiResponseMessage(String status, String message, String errorCode, String errorMessage) {
         this.status = status;
         this.message = message;
