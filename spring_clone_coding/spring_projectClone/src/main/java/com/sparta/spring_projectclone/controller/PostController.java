@@ -29,8 +29,7 @@ public class PostController {
 
     //포스트 작성
     @PostMapping("/api/posts")
-    public void savePost(@RequestBody PostRequestDto requestDto,
-                         @RequestPart MultipartFile multipartFile) {
+    public void savePost(@RequestBody PostRequestDto requestDto) {
         postService.savePost(requestDto);
     }
 
