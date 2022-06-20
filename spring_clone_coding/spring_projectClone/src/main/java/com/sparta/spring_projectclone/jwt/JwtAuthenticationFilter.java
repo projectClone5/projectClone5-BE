@@ -1,70 +1,33 @@
 package com.sparta.spring_projectclone.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.spring_projectclone.dto.requestDto.LoginRequestDto;
-import com.sparta.spring_projectclone.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    // login 요청을 하면 로그인 시도를 위해서 실행되는 함수
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("JwtAuthenticationFilter : 로그인 시도중");
-        // username과 password를 받아서 Object에 넣기
-        ObjectMapper om = new ObjectMapper();
-        LoginRequestDto requestDto = null;
-        try {
-            requestDto = om.readValue(request.getInputStream(), LoginRequestDto.class);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        // 헤더에서 JWT 를 받아옵니다
+        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+        // 유효한 토큰인지 확인
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            // 토큰이 유효하면 토큰으로부터 유저 정보를 받아옵니다
+            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            // SecurityContext 에 Authentication 객체를 저장
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword());
-
-        // loadUserByUsername 실행됨
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        System.out.println("로그인 완료됨 :" + userDetails.getUser().getUsername()); // 값이 나오면 로그인이 정상적으로 되었다는 뜻.
-        return authentication;
-    }
-
-    // attemptAuthentication 실행 후 인증이 정상적으로 되었으면 successfulAuthentication 함수가 실행됨.
-    // JWT토큰을 만들어서 request 요청한 사용자에게 JWT토큰을 response해주면 됨.
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("successfulAuthentication실행됨 : 인증완료되었다는 뜻.");
-        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
-
-        // Hash암호방식
-        String jwtToken = JWT.create()
-                // 토큰이름?
-                .withSubject("jwtToken : "+userDetails.getUser().getUsername())
-                // 유효시간
-                .withClaim("expireDate", new Date(System.currentTimeMillis()+JwtProperties.tokenValidTime))
-                // jwt확인용 username
-                .withClaim("username", userDetails.getUser().getUsername())
-                // secretkey와 함께 HMAC256 복호화
-                .sign(Algorithm.HMAC256(JwtProperties.secretKey));
-
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+        chain.doFilter(request, response);
     }
 }
