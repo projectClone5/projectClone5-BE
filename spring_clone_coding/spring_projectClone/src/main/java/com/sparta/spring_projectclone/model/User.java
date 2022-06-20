@@ -1,9 +1,11 @@
 package com.sparta.spring_projectclone.model;
 
 
+import com.sparta.spring_projectclone.dto.requestDto.UserRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +38,32 @@ public class User {
     @Column
     private String userImgUrl;
 
-//    @OneToMany
-//    private List<Post> posts = new ArrayList<>();
-//
-//    @OneToMany
-//    private List<Love> loves = new ArrayList<>();
+    @OneToMany
+    private List<Post> posts = new ArrayList<>();
 
+    @OneToMany
+    private List<Love> loves = new ArrayList<>();
 
+    public User(String username, String nickname) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.userImgUrl = userImgUrl;
+    }
+
+    public User(String username, String nickname, String password) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+    }
+
+    public User(Long userId, UserRequestDto userRequestDto, String username) {
+        this.nickname = userRequestDto.getNickname();
+        this.userImgUrl = userRequestDto.getUserImgUrl();
+    }
+
+    public void update(UserRequestDto userRequestDto) {
+        this.nickname = userRequestDto.getNickname();
+        this.userImgUrl = userRequestDto.getUserImgUrl();
+    }
 }

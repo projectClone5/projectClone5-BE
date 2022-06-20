@@ -23,8 +23,8 @@ public class Love {
     @Column
     private Long postId;
 
-//    @ManyToOne
-//    private User user;
+    @ManyToOne
+    private User user;
 
 
 }

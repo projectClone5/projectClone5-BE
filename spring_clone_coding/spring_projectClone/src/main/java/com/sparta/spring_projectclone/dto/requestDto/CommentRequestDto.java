@@ -1,4 +1,4 @@
-package com.sparta.spring_projectclone.dto;
+package com.sparta.spring_projectclone.dto.requestDto;
 
 
 import javax.validation.constraints.NotNull;
@@ -14,6 +14,6 @@ public class CommentRequestDto {
     @NotNull(message = "내용을 입력해 주세요.")
     private int reviewPoint;
 
-    private String image;
+//    private String image;
 }
 
