@@ -2,6 +2,7 @@ package com.sparta.spring_projectclone.service;
 
 import com.sparta.spring_projectclone.dto.requestDto.LoginRequestDto;
 import com.sparta.spring_projectclone.dto.requestDto.SignupRequestDto;
+import com.sparta.spring_projectclone.dto.requestDto.UserRequestDto;
 import com.sparta.spring_projectclone.model.User;
 import com.sparta.spring_projectclone.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -74,4 +75,20 @@ public class UserService {
         return error;
     }
 
+    public void update(Long userId, UserRequestDto userRequestDto) {
+        String nickname = userRequestDto.getNickname();
+        String userImgUrl = userRequestDto.getUserImgUrl();
+
+        Optional<User> found = userRepository.findByNickname(nickname);
+        if (found.isPresent()) {
+            throw new IllegalArgumentException("중복된 닉네임 입니다.");
+        }
+
+//        User user = new User(nickname , userImgUrl);
+        User user = new User(userRequestDto);
+        System.out.println("user = " + user);
+
+        user.update(userRequestDto);
+
+    }
 }

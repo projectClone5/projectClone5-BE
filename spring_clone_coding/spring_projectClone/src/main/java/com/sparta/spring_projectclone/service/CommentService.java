@@ -21,11 +21,11 @@ public class CommentService {
 
     // 댓글 작성
     @Transactional
-    public CommentResponseDto commentWrite(Long postId, CommentRequestDto commentRequestDto) {
+    public CommentResponseDto commentWrite(Long postId, CommentRequestDto commentRequestDto , String username) {
 
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
-        Comment comment = new Comment(commentRequestDto , post);
+        Comment comment = new Comment(commentRequestDto , post, username);
         CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
         commentRepository.save(comment);
         return commentResponseDto;
