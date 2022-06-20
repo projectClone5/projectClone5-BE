@@ -42,7 +42,7 @@ public class UserService {
         String nickname = requestDto.getNickname();
         String password = requestDto.getPassword();
         String passwordCheck = requestDto.getPasswordCheck();
-        String pattern = "^[a-zA-Z0-9]*$";  // 알파벳 대소문자 패턴
+        String pattern1 = "^[a-zA-Z0-9]*$";  // 알파벳 대소문자 패턴
         String pattern2 = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$";   // 이메일 형식 패턴
 
         // 회원 ID 중복 확인
@@ -54,7 +54,7 @@ public class UserService {
         // 회원가입 조건
         if (username.length() < 3) {
             throw new IllegalArgumentException("username은 3자 이상 입력하세요.");
-        } else if (!Pattern.matches(pattern, username)) {
+        } else if (!Pattern.matches(pattern2, username)) {
             throw new IllegalArgumentException("알파벳 대소문자와 숫자로만 입력하세요.");
         } else if (!password.equals(passwordCheck)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -73,5 +73,4 @@ public class UserService {
         userRepository.save(user);
         return error;
     }
-
 }
