@@ -30,7 +30,6 @@ public class CommentService {
         commentRepository.save(comment);
         return commentResponseDto;
 
-
 //        Comment comment = Comment.commentCreateDto(commentRequestDto);
 //        commentRepository.save(comment , post);
 //        CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
@@ -39,18 +38,31 @@ public class CommentService {
 
     //댓글 수정
     @Transactional
-    public CommentResponseDto commentUpdated(Long commentId, CommentRequestDto commentRequestDto){
+    public CommentResponseDto commentUpdated(Long commentId, CommentRequestDto commentRequestDto, String username){
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
-        comment.update(commentRequestDto);
-        CommentResponseDto CommentResponseDto = new CommentResponseDto(comment);
-        return CommentResponseDto;
+        String writer = comment.getUsername();
+        // 본인이 작성한 글이 아닙니다
+        if(writer.equals(username)){
+            comment.update(commentRequestDto);
+            CommentResponseDto CommentResponseDto = new CommentResponseDto(comment);
+            return CommentResponseDto;
+        } else {
+            throw new IllegalArgumentException("작성한 유저가 아닙니다.");
+        }
+
     }
 
     // 댓글 삭제
-    public void commentDelete(Long commentId) {
+    public void commentDelete(Long commentId, String username) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
-        comment.delete(comment);
+        String writer = comment.getUsername();
+        // 본인이 작성한 글이 아닙니다
+        if(writer.equals(username)){
+            comment.delete(comment);
+        } else {
+            throw new IllegalArgumentException("작성한 유저가 아닙니다.");
+        }
     }
 }

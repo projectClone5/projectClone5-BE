@@ -75,7 +75,9 @@ public class UserService {
         return error;
     }
 
-    public void update(Long userId, UserRequestDto userRequestDto) {
+
+    //회원 정보 수정
+    public void update(Long userId, UserRequestDto userRequestDto, String username) {
         String nickname = userRequestDto.getNickname();
         String userImgUrl = userRequestDto.getUserImgUrl();
 
@@ -83,6 +85,13 @@ public class UserService {
         if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 닉네임 입니다.");
         }
+
+
+
+
+
+
+
 
 //        User user = new User(nickname , userImgUrl);
         User user = new User(userRequestDto);

@@ -31,7 +31,6 @@ public class UserController {
         }
         catch(IllegalStateException e) {
             System.out.println("1실패");
-
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -56,7 +55,7 @@ public class UserController {
     // 회원 정보 수정
     @PutMapping("/api/user/{userId}")
     public ResponseEntity<ApiResponseMessage> userUpdate( @PathVariable("userId") Long userId, @RequestBody UserRequestDto userRequestDto , @AuthenticationPrincipal UserDetailsImpl userDetails){
-        userService.update(userId, userRequestDto);
+        userService.update(userId, userRequestDto, userDetails.getUsername());
         ApiResponseMessage message = new ApiResponseMessage("Success", "개인정보가 수정 되었습니다.", "", "");
         return new  ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
     }
