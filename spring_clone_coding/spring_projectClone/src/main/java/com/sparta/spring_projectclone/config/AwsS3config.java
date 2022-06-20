@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Bean;
 
 public class AwsS3config {
 
-    @Value("${awsAccessKey}")
+    @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 
-    @Value("${awsSecretKey}")
+    @Value("${cloud.aws.credentials.secret-key}")
     private String secretKey;
 
     @Value("ap-northeast-2")
