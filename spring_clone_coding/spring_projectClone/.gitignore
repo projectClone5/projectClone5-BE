@@ -1,5 +1,7 @@
 HELP.md
 .gradle
+.application.properties
+.application-s3.properties
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -18,8 +20,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.application.properties
-.application-s3.properties
+
 .idea
 *.iws
 *.iml
