@@ -56,7 +56,7 @@ public class UserService {
         if (username.length() < 3) {
             throw new IllegalArgumentException("username은 3자 이상 입력하세요.");
         } else if (!Pattern.matches(pattern2, username)) {
-            throw new IllegalArgumentException("알파벳 대소문자와 숫자로만 입력하세요.");
+            throw new IllegalArgumentException("이메일 형식으로 입력해 주세요.");
         } else if (!password.equals(passwordCheck)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         } else if (password.length() < 4) {
