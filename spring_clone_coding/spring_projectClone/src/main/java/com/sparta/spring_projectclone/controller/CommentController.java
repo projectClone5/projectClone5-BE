@@ -31,7 +31,6 @@ public class CommentController {
         ApiResponseMessage message = new ApiResponseMessage("Success", "댓글이 작성 되었습니다.", "", "");
         return new  ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
     }
-
     //댓글 수정
     @PutMapping("/api/comment/{commentId}")
     public CommentResponseDto commentUpdate(@PathVariable("commentId") Long commentId,
