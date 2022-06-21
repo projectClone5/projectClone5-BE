@@ -74,10 +74,10 @@ public class PostService {
         for (Comment comment : comments) {
             PostCommentResponseDto postCommentResponseDto = PostCommentResponseDto.builder()
                     .commentId(comment.getId())
-                    .userId(comment.getPost().getUser().getId())
                     .userImgUrl(comment.getPost().getUser().getUserImgUrl())
                     .comment(comment.getComment())
                     .reviewPoint(comment.getReviewPoint())
+                    .nickname(comment.getNickname())
                     .build();
             commentList.add(postCommentResponseDto);
         }
