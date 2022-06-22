@@ -26,7 +26,7 @@ public class EmailController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<String> emailConfirm(
-            @RequestBody @ApiParam(value="이메일정보 정보", required = true) String email) throws Exception {
+            @RequestBody @ApiParam(value="이메일정보", required = true) String email) throws Exception {
 
         String confirm = emailService.sendSimpleMessage(email);
 
