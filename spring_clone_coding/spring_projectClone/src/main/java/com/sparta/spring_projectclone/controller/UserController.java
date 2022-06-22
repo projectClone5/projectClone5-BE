@@ -7,13 +7,21 @@ import com.sparta.spring_projectclone.dto.requestDto.UserRequestDto;
 import com.sparta.spring_projectclone.exception.ApiResponseMessage;
 import com.sparta.spring_projectclone.model.User;
 import com.sparta.spring_projectclone.repository.UserRepository;
+import com.sparta.spring_projectclone.security.EmailServiceImpl;
 import com.sparta.spring_projectclone.security.UserDetailsImpl;
 import com.sparta.spring_projectclone.jwt.JwtTokenProvider;
+import com.sparta.spring_projectclone.service.EmailService;
 import com.sparta.spring_projectclone.service.S3Uploader;
 import com.sparta.spring_projectclone.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +41,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final S3Uploader s3Uploader;
+    private final EmailService emailService;
 
 
     // 회원 가입 요청 처리
@@ -89,6 +98,22 @@ public class UserController {
         userService.update(userId, userRequestDto, userDetails.getUsername(), multipartFile);
         ApiResponseMessage message = new ApiResponseMessage("Success", "개인정보가 수정 되었습니다.", "", "");
         return new ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/user/emailConfirmation")
+    @ApiOperation(value = "회원 가입시 이메인 인증", notes = "기존사용하고 있는 이메일을 통해 인증")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<String> emailConfirm(
+            @RequestBody @ApiParam(value="이메일정보 정보", required = true) String email) throws Exception {
+
+        String confirm = emailService.sendSimpleMessage(email);
+
+        return ResponseEntity.status(200).body(confirm);
     }
 
 }
