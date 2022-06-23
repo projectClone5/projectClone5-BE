@@ -30,6 +30,9 @@
 - Redux-thunk
 - React-router-dom
 - Styled-component
+- connected-react-router
+- lodash
+- react-icons
 
 ### Back-end
 - java8
@@ -64,7 +67,7 @@
 <br>
 
 ## 관련 링크
-
+https://www.frip.co.kr/
 <!-- 
 ## 프로젝트 정보
 
