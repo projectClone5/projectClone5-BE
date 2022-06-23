@@ -44,7 +44,7 @@ public class CommentController {
     @DeleteMapping("/api/comment/{commentId}")
     public ResponseEntity<ApiResponseMessage> commentDelete(@PathVariable("commentId") Long commentId,
                                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        commentService.commentDelete(commentId, userDetails.getUsername());
+        commentService.commentDelete(commentId, userDetails.getUser().getNickname());
         ApiResponseMessage message = new ApiResponseMessage("Success", "댓글이 삭제 되었습니다.", "", "");
         return new ResponseEntity<ApiResponseMessage>(message, HttpStatus.OK);
     }
