@@ -2,7 +2,6 @@ package com.sparta.spring_projectclone.controller;
 
 import com.sparta.spring_projectclone.dto.requestDto.PostRequestDto;
 import com.sparta.spring_projectclone.dto.responseDto.PostResponseDto;
-import com.sparta.spring_projectclone.model.Category;
 import com.sparta.spring_projectclone.security.UserDetailsImpl;
 import com.sparta.spring_projectclone.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,28 +32,17 @@ public class PostController {
 
     //포스트 작성
     @PostMapping("/api/posts")
-    public void savePost(@RequestPart("imgUrl") MultipartFile multipartFile,
-                         @RequestParam("title") String title,
-                         @RequestParam("content") String content,
-                         @RequestParam("category") Category category,
-                         @RequestParam("price") int price,
+    public void savePost(@ModelAttribute PostRequestDto postRequestDto,
                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        PostRequestDto postRequestDto = new PostRequestDto(title, content, category, price);
-        //멀티 파트폼 헤더에 타입이 폼데이터라고 multipart/formdater 해야함
-        postService.savePost(postRequestDto, multipartFile, userDetails);
+        postService.savePost(postRequestDto, userDetails);
     }
 
     //포스트 수정
     @PutMapping("/api/post/{postId}")
     public void updatePost(@PathVariable Long postId,
-                           @RequestPart(value = "imgUrl", required = false) MultipartFile multipartFile,
-                           @RequestParam("title") String title,
-                           @RequestParam("content") String content,
-                           @RequestParam("category") Category category,
-                           @RequestParam("price") int price,
+                           @ModelAttribute PostRequestDto postRequestDto,
                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        PostRequestDto postRequestDto = new PostRequestDto(title, content, category, price);
-        postService.updatePost(postId, postRequestDto, multipartFile, userDetails);
+        postService.updatePost(postId, postRequestDto, userDetails);
     }
 
     //포스트 삭제

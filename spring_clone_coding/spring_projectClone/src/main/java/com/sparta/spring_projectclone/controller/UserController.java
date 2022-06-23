@@ -2,21 +2,16 @@ package com.sparta.spring_projectclone.controller;
 
 import com.sparta.spring_projectclone.dto.requestDto.LoginRequestDto;
 import com.sparta.spring_projectclone.dto.requestDto.SignupRequestDto;
-
 import com.sparta.spring_projectclone.dto.requestDto.UserRequestDto;
 import com.sparta.spring_projectclone.exception.ApiResponseMessage;
+import com.sparta.spring_projectclone.jwt.JwtTokenProvider;
 import com.sparta.spring_projectclone.model.User;
 import com.sparta.spring_projectclone.repository.UserRepository;
 import com.sparta.spring_projectclone.security.UserDetailsImpl;
-import com.sparta.spring_projectclone.jwt.JwtTokenProvider;
-import com.sparta.spring_projectclone.service.S3Uploader;
 import com.sparta.spring_projectclone.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +27,6 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final S3Uploader s3Uploader;
 
 
     // 회원 가입 요청 처리

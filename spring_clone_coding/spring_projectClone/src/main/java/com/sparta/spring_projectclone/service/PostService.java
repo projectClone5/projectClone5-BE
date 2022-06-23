@@ -105,37 +105,37 @@ public class PostService {
     }
 
     //게시글 작성
-    public void savePost(PostRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) {
+    public void savePost(PostRequestDto postRequestDto, UserDetailsImpl userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
 
-        Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
-        
+        Map<String, String> imgResult = awsS3Service.uploadFile(postRequestDto.getImgUrl());
+
         Post post = Post.builder()
-                .title(requestDto.getTitle())
+                .title(postRequestDto.getTitle())
                 .imgUrl(imgResult.get("url"))
                 .transImgFileName(imgResult.get("transImgFileName"))
-                .content(requestDto.getContent())
-                .category(requestDto.getCategory())
-                .price(requestDto.getPrice())
+                .content(postRequestDto.getContent())
+                .category(postRequestDto.getCategory())
+                .price(postRequestDto.getPrice())
                 .user(user)
                 .build();
         postRepository.save(post);
     }
 
     //게시글 수정
-    public void updatePost(Long postId, PostRequestDto requestDto, MultipartFile multipartFile, UserDetailsImpl userDetails) {
+    public void updatePost(Long postId, PostRequestDto requestDto, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
         //게시글 작성자가 현재 로그인한 사람인지 확인
         validateUser(userDetails, post);
 
-        if (multipartFile != null) {
+        if (requestDto.getImgUrl() != null) {
             //기존 이미지 삭제후 재등록
             awsS3Service.deleteFile(post.getTransImgFileName());
-            Map<String, String> imgResult = awsS3Service.uploadFile(multipartFile);
+            Map<String, String> imgResult = awsS3Service.uploadFile(requestDto.getImgUrl());
             //엔티티 업데이트
             post.update(requestDto,imgResult);
         } else {
